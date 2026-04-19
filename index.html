@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<button onclick="downloadPDF()" class="pdf-btn">Download PDF</button>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IEEE Event Dashboard</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Poppins, sans-serif;
+  background:#e6f2ff;
+  color:#0f172a;
+}
+
+/* HEADER */
+header{
+  text-align:center;
+  padding:20px;
+  background:#cfe8ff;
+}
+
+.logos img{
+  height:50px;
+  margin:10px;
+}
+
+.main-title{
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #2563eb, #38bdf8, #2563eb);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 3s linear infinite;
+}
+
+@keyframes shine {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+.subtitle{
+  font-size: 0.9rem;
+  color:#1e3a8a;
+}
+
+/* SEARCH */
+header input{
+  padding:10px;
+  width:300px;
+  border-radius:5px;
+  border:1px solid #94caff;
+  margin-top:10px;
+}
+
+/* LAYOUT */
+.container{
+  display:flex;
+}
+
+/* SIDEBAR */
+aside{
+  width:260px;
+  background:#dbeafe;
+  height:100vh;
+  overflow-y:auto;
+  padding:10px;
+}
+
+aside h3{
+  margin-top:15px;
+  font-size:14px;
+  color:#1e3a8a;
+}
+
+aside div{
+  padding:8px;
+  margin:5px 0;
+  background:#bfdbfe;
+  cursor:pointer;
+  border-radius:5px;
+}
+
+aside div:hover{
+  background:#60a5fa;
+  color:white;
+}
+
+/* CONTENT */
+main{
+  flex:1;
+  padding:20px;
+}
+
+/* EVENT CARD WITH IMAGE RIGHT */
+.event{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:white;
+  margin-bottom:20px;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+.event-text{
+  max-width:65%;
+}
+
+.event h2{
+  margin-top:0;
+  color:#1e3a8a;
+}
+
+.event img{
+  width:250px;
+  height:auto;
+  border-radius:10px;
+}
+.pdf-btn{
+  margin-top:10px;
+  padding:10px 15px;
+  background:#2563eb;
+  color:white;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+}
+
+.pdf-btn:hover{
+  background:#1d4ed8;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+  <!-- LOGOS -->
+  <div class="logos">
+    <img src="images/ieee.png">
+    <img src="images/wie.png">
+    <img src="images/cui.png">
+  </div>
+
+  <h1 class="main-title">IEEE Event Recap 2025–2026</h1>
+  <p class="subtitle">IEEE Student Branch | WIE Affinity | COMSATS University Islamabad, Abbottabad Chapter</p>
+
+  <input type="text" id="search" placeholder="Search events...">
+</header>
+
+<div class="container">
+  <aside id="sidebar"></aside>
+  <main id="content"></main>
+</div>
+
+<script>
+
+// ===== EVENTS (CLEANED & COMBINED) =====
+let allEvents = [
+
+/* ===== 2026 ===== */
+
+{ name:"World Quantum Day 2026", date:"14 April 2026", month:"April 2026", resource:"Dr.Jamil, Dr.Rabia", head:"Sibgha & Haseeb", facilitator:"Engr. Mashhood Murtaza", participants:"25", image:"images/event8.jpg" },
+{ name:"From Village Samesar To Cern", date:"26 March 2026", month:"March 2026", resource:"Engr. Zainab Aamir", head:"Haram Najam", facilitator:"Engr. Mashhood Murtaza", participants:"35", image:"images/event18.jpeg" },
+
+{ name:"Semester Project Competition", date:"8 Jan 2026", month:"January 2026", resource:"University", head:"Talal Khan & Team", facilitator:"Head of Department+ Faculty", participants:"All CE Students", image:"images/event9.jpg" },
+
+{ name:"AI meet Reality: Trends in AI", date:"7 July, 2025", month:" July 2025", head:"Haram Najam", participants:"30" },
+
+{ name:"Final Year Project Essentials", date:"June2025", month:"June 2025", resource:"Dr. Amir Shahzad", head:"IEEE Management Team", facilitator:"CE Department", participants:"45" },
+
+{ name:"Additive Manufacturing of Electrical Machines", date:"26 September 2025", month:"September 2025", resource:"Foreign Speakers", head:"Haram Najam", facilitator:"Dr Faisal Khan", participants:"45" },
+
+{ name:"CE Department’s Eve", date:"20 November 2025", month:"November 2025", resource:"IEEE participants", head:"IEEE Management and CE Management teams", facilitator:"CE Department", participants:"200", image:"images/event17.jpg" },
+
+/* ===== NOV 2025 ===== */
+
+{ name:"Role of Woman in Engineering", date:"21 Nov 2025", month:"November 2025", resource:"Engr. Momina Naveed", head:"Ayesha Zahid", facilitator:"Dr Zahid Jihangiri", participants:"65", image:"images/event10.jpg" },
+
+{ name:"Robo War Zone", date:"13 Nov 2025", month:"November 2025", head:"IEEE & IET", participants:"10 Robots", image:"images/event11.jpg" },
+
+{ name:"Student Week Events", date:"10 Nov 2025", month:"November 2025", resource:"IEEE management team ", head:"Haram , Talal, Zeeshan, Iftikhar", facilitator:"Dr. Ahmed Fayyaz", Modules:"Dare to Burst, Draw in Dark, Minute to Win" },
+
+{ name:"Honouring Legacy", date:"1 Nov 2025", month:"November 2025", head:"Haram Najam, Sibgha Sagheer,Talal Khan", facilitator:"CE Department", participants:"Ex-Executive Members", image:"images/event12.jpeg" },
+
+{ name:"Cybersecurity Intelligence", date:"3 Nov 2025", month:"November 2025", resource:"Dr. Rasheed Hussain", head:"Haram Najam", participants:"35-40", image:"images/event7.jpg" },
+
+/* ===== OCT 2025 ===== */
+
+{ name:"Generative AI Workshop", date:"21-23 Oct 2025", month:"October 2025", resource:"Saima Habib, Nayab Pervez", head:"IEEE & IET", facilitator:"Farhan Iqbal", participants:"70", image:"images/event15.jpg" },
+
+{ name:"Global Freelance Mastery", date:"13 Oct 2025", month:"October 2025", resource:"Engr. Muneeb Anjum", head:"Management Team", facilitator:"Dr. Zahid Jihangiri", participants:"40", image:"images/event6.jpg" },
+
+{ name:"IEEE Day Celebration", date:"6 Oct 2025", month:"October 2025", resource:"IEEE Islamabad Section", head:"IEEE Islamabad Section", facilitator:"Dr Nosherwan", participants:"10", image:"images/event13.jpg" },
+
+/* ===== SEPT 2025 ===== */
+
+{ name:"Pakistan Power Sector Overview", date:"19 Sept 2025", month:"September 2025", resource:"Engr. Majid Yaseen", participants:"50-65", image:"images/event14.jpg" },
+
+/* ===== JULY 2025 ===== */
+
+{ name:"Innovate Expo 2025", date:"23 July 2025", month:"July 2025", resource:"CUI Campus", head:"IEEE, IET, Civil Society", facilitator:"CE Department", participants:"Final Year Students", image:"images/event16.jpg" },
+
+{ name:"Embedded AI SoC Development", date:"1 July 2025", month:"July 2025", resource:"Engr. Hamid Saeed", head:"Engr. Mashood Murtaza", facilitator:"Zeeshan Ali", participants:"50-65", image:"images/event5.jpg" },
+
+/* ===== JUNE 2025 ===== */
+
+{ name:"Science of Job Hunting", date:"14 June 2025", month:"June 2025", resource:"Engr. Mahnoor Qaiser", head:"Remsha Imtiaz", facilitator:"Engr. Mashood Murtaza", participants:"50-65", image:"images/event4.jpg" },
+
+/* ===== MAY 2025 ===== */
+
+{ name:"Seminar CubeSat Technology", date:"14 May 2025", month:"May 2025", resource:"SSTRL, NCGSA", head:"Department of Electrical Engineering", facilitator:"CE,EE departmments", participants:"60", image:"images/event3.jpg" },
+
+{ name:"Mastering in AutoCAD", date:"12-14 May 2025", month:"May 2025", resource:"Dr. Zulfiqar Khattak", head:"Dawood Khan", facilitator:"Dr. Zulfiqar Khattak", participants:"65", image:"images/event2.jpg" },
+
+/* ===== APRIL 2025 ===== */
+
+{ name:"FPGAs: From Labs to Industry", date:"25 April 2025", month:"April 2025", resource:"Rimsha Javed", head:"Zeeshan Ali", facilitator:"Dr. Malik Summair Asghar", participants:"50", image:"images/event1.jpg" }
+
+];
+// ===== SORT EVENTS BY DATE (latest first) =====
+allEvents.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+// ===== DISPLAY =====
+function displayEvents(data){
+
+  let sidebar = document.getElementById("sidebar");
+  let content = document.getElementById("content");
+
+  sidebar.innerHTML = "";
+  content.innerHTML = "";
+
+  let currentMonth = "";
+
+  data.forEach((event, index) => {
+
+    // GROUP BY MONTH
+    if(event.month !== currentMonth){
+      let monthTitle = document.createElement("h3");
+      monthTitle.innerText = event.month;
+      sidebar.appendChild(monthTitle);
+      currentMonth = event.month;
+    }
+
+    // SIDEBAR
+    let item = document.createElement("div");
+    item.innerText = event.name;
+
+    item.onclick = () => {
+      document.getElementById("event"+index).scrollIntoView({behavior:"smooth"});
+    };
+
+    sidebar.appendChild(item);
+
+    // EVENT CARD
+    let section = document.createElement("div");
+    section.className = "event";
+    section.id = "event"+index;
+
+    // CONDITIONAL CONTENT (NO UNDEFINED)
+    let details = `
+      <h2>${event.name}</h2>
+      ${event.date ? `<p><b>Date:</b> ${event.date}</p>` : ""}
+      ${event.resource ? `<p><b>Resource:</b> ${event.resource}</p>` : ""}
+      ${event.head ? `<p><b>Event Head:</b> ${event.head}</p>` : ""}
+      ${event.facilitator ? `<p><b>Facilitator:</b> ${event.facilitator}</p>` : ""}
+      ${event.participants ? `<p><b>Participants:</b> ${event.participants}</p>` : ""}
+      ${event.Modules ? `<p><b>Activities:</b> ${event.Modules}</p>` : ""}
+    `;
+
+    let image = event.image ? `<img src="${event.image}">` : "";
+
+    section.innerHTML = `
+      <div class="event-text">${details}</div>
+      ${image}
+    `;
+
+    content.appendChild(section);
+
+  });
+}
+
+// SEARCH
+document.getElementById("search").addEventListener("input", function(){
+  let value = this.value.toLowerCase();
+  let filtered = allEvents.filter(e => e.name.toLowerCase().includes(value));
+  displayEvents(filtered);
+});
+
+// ===== PDF DOWNLOAD =====
+function downloadPDF(){
+
+  const element = document.body;
+
+  html2pdf().from(element).set({
+    margin: 0.5,
+    filename: 'IEEE_Event_Recap.pdf',
+    image: { type: 'jpeg', quality: 1 },
+    html2canvas: { scale: 3 },
+    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+  }).save();
+}
+
+// LOAD
+displayEvents(allEvents);
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</body>
+</html>
